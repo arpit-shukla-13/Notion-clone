@@ -226,6 +226,7 @@ function DocumentEditor({ token }) {
           </button>
         </div>
       </header>
+      
 
       {/* Editor Area */}
       {isLoading ? (
