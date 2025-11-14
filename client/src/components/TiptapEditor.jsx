@@ -1,14 +1,16 @@
-import React from 'react';
+// --- English Comments Only ---
+import React, { useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+// --- 1. Import Collaboration Extensions ---
+import Collaboration from '@tiptap/extension-collaboration';
+import CollaborationCursor from '@tiptap/extension-collaboration-cursor';
 
-// Yeh humara Toolbar hai
+// Toolbar Component (Unchanged)
 const Toolbar = ({ editor }) => {
   if (!editor) {
     return null;
   }
-
-  // Helper function for button styling
   const getButtonClass = (name, options = {}) => {
     return `p-2 rounded ${
       editor.isActive(name, options) 
@@ -19,6 +21,7 @@ const Toolbar = ({ editor }) => {
 
   return (
     <div className="p-2 bg-white/10 border-b border-white/20 rounded-t-xl flex flex-wrap gap-2">
+      {/* ... (All buttons: Bold, Italic, Strike, H1, H2, Lists) ... */}
       <button
         onClick={() => editor.chain().focus().toggleBold().run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
@@ -68,33 +71,53 @@ const Toolbar = ({ editor }) => {
   );
 };
 
-// Yeh humara main Editor Component hai
-const TiptapEditor = ({ content, onChange }) => {
+// --- This is now the COLLABORATIVE editor ---
+// It expects a ydoc and provider
+const TiptapEditor = ({ ydoc, provider, onEditorReady }) => {
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        // Aap yahan extensions ko disable ya configure kar sakte hain
-        // e.g., heading: { levels: [1, 2, 3] }
+        // Disable history extension because Y.js handles history
+        history: false,
+      }),
+      // --- 2. Add Collaboration Extensions ---
+      Collaboration.configure({
+        document: ydoc, // Pass the Y.Doc
+        field: 'content', // Specify the field name
+      }),
+      CollaborationCursor.configure({
+        provider: provider, // Pass the HocuspocusProvider
+        user: {
+          name: `User ${Math.floor(Math.random() * 100)}`,
+          color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+        },
       }),
     ],
-    content: content, // Initial content jo database se aaya
-    
-    // Jab user type kare, toh yeh function call hoga
-    onUpdate: ({ editor }) => {
-      onChange(editor.getHTML()); // Content ko HTML string ke roop mein bhej rahe hain
-    },
-    
-    // Editor ko styles dene ke liye
     editorProps: {
       attributes: {
-        // Tailwind 'prose' classes styling apply karengi
         class: 'prose prose-invert max-w-none p-4 focus:outline-none min-h-[50vh]',
       },
     },
   });
 
+  // --- Fix for React Render Loop ---
+  useEffect(() => {
+    if (editor && onEditorReady) {
+      setTimeout(() => {
+        onEditorReady(editor);
+      }, 0);
+    }
+    return () => {
+      if (editor) {
+        editor.destroy();
+      }
+    };
+  }, [editor, onEditorReady]);
+
+
   return (
-    <div className="bg-white/5 border border-white/20 rounded-xl">
+    <div className="bg-slate-800 border border-white/20 rounded-xl">
       <Toolbar editor={editor} />
       <EditorContent editor={editor} className="editor-content" />
     </div>
