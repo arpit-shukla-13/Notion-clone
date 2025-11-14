@@ -117,6 +117,8 @@ function Register({ setToken }) {
             </div>
           )}
 
+
+
           <button
             type="submit"
             disabled={isLoading}
@@ -131,7 +133,7 @@ function Register({ setToken }) {
             Already have an account?
             <Link to="/login" className="text-purple-400 hover:text-purple-300 font-medium ml-1 transition-colors">
               Sign In
-              
+
             </Link>
           </p>
         </div>
