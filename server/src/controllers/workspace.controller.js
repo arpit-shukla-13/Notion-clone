@@ -1,20 +1,29 @@
-// src/controllers/workspace.controller.js
+// --- English Comments Only ---
+// This file handles logic for Workspaces
+
 const Workspace = require('../models/Workspace');
+const Document = require('../models/Document'); // We might need this later
 
 // @desc    Create a new workspace
 // @route   POST /api/workspaces
 // @access  Private
 exports.createWorkspace = async (req, res) => {
   const { name } = req.body;
-  const ownerId = req.user._id; // Yeh auth.middleware se aa raha hai
+  const ownerId = req.user._id; // This comes from the 'protect' middleware
 
   try {
     const workspace = await Workspace.create({
       name,
       owner: ownerId,
     });
-    res.status(201).json(workspace);
+    
+    // We populate the owner info to send back to the frontend
+    const populatedWorkspace = await Workspace.findById(workspace._id).populate('owner', 'username email');
+    
+    res.status(201).json(populatedWorkspace);
+    
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server Error: ' + error.message });
   }
 };
@@ -25,14 +34,15 @@ exports.createWorkspace = async (req, res) => {
 exports.getMyWorkspaces = async (req, res) => {
   const userId = req.user._id;
   try {
-    // Woh saare workspaces dhoondo jahan user ek member hai
-    
-    // ----- YAHAN UPDATE KIYA GAYA HAI -----
+    // Find all workspaces where the user is listed as a member
     const workspaces = await Workspace.find({ 'members.user': userId })
-      .populate('owner', 'username email'); // Owner ki details fetch karein
-    
+      .populate('owner', 'username email') // Populate owner details
+      .sort({ createdAt: -1 }); // Show newest first
+      
     res.json(workspaces);
+    
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Server Error: ' + error.message });
   }
 };

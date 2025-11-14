@@ -1,7 +1,8 @@
-// src/app.js
+// --- English Comments Only ---
+// Use CommonJS 'require' syntax
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/db');
+const connectDB = require('./config/db.js'); // Assuming db.js also uses module.exports
 
 // Connect Database
 connectDB();
@@ -17,9 +18,10 @@ app.get('/', (req, res) => {
   res.send('API is running...');
 });
 
-// Routes
-app.use('/api/auth', require('./routes/auth.routes'));
-app.use('/api/workspaces', require('./routes/workspace.routes')); 
-app.use('/api/documents', require('./routes/document.routes'));
+// Routes (Use require)
+app.use('/api/auth', require('./routes/auth.routes.js'));
+app.use('/api/workspaces', require('./routes/workspace.routes.js')); 
+app.use('/api/documents', require('./routes/document.routes.js'));
 
+// Use CommonJS 'module.exports'
 module.exports = app;
