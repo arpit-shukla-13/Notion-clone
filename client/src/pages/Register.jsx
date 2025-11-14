@@ -25,7 +25,7 @@ function Register({ setToken }) {
       const res = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // 4. FIXED: 'username' ko body mein send kiya
+       
         body: JSON.stringify({ username, email, password }), 
       });
       
@@ -36,7 +36,7 @@ function Register({ setToken }) {
         throw new Error(errorMsg);
       }
       
-      // Step 2: Login automatically after register
+      // Step 2: Auto-login after successful registration
       const loginRes = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
