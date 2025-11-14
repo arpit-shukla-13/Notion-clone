@@ -2,12 +2,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-// 1. FIXED: 'process.env' ko 'import.meta.env' kiya
-// 2. NOTE: Port 5000 ki jagah 8000 (jo humara server use kar raha tha)
+
 const API_URL = import.meta.env.VITE_APP_API_URL || 'http://localhost:8000/api';
 
 function Register({ setToken }) {
-  // 3. FIXED: 'username' state add kiya
+ 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,7 +31,7 @@ function Register({ setToken }) {
       
       let data = await res.json();
       if (!res.ok) {
-        // Purana error message format use kiya (humare backend ke hisaab se)
+       
         const errorMsg = data.message || (data.errors ? data.errors[0].msg : 'Signup failed');
         throw new Error(errorMsg);
       }
