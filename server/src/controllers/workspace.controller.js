@@ -3,6 +3,7 @@
 
 const Workspace = require('../models/Workspace');
 const Document = require('../models/Document'); // We might need this later
+const Activity = require('../models/Activity'); // <-- 1. IMPORT THE NEW ACTIVITY MODEL
 
 // @desc    Create a new workspace
 // @route   POST /api/workspaces
@@ -20,6 +21,16 @@ exports.createWorkspace = async (req, res) => {
     // We populate the owner info to send back to the frontend
     const populatedWorkspace = await Workspace.findById(workspace._id).populate('owner', 'username email');
     
+    // --- 2. ADDED: Log this action to the Activity feed ---
+    // We log this *before* sending the response, to make sure it's saved.
+    await Activity.create({
+      action: 'CREATED_WORKSPACE',
+      user: ownerId,
+      workspace: workspace._id,
+      document: null // No specific document for this action
+    });
+    // --- End of Added Code ---
+
     res.status(201).json(populatedWorkspace);
     
   } catch (error) {

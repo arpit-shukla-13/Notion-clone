@@ -23,5 +23,10 @@ app.use('/api/auth', require('./routes/auth.routes.js'));
 app.use('/api/workspaces', require('./routes/workspace.routes.js')); 
 app.use('/api/documents', require('./routes/document.routes.js'));
 
+// --- 1. ADDED: Register the new Analytics route (Requirement 5) ---
+// We are NOT adding the file upload (Requirement 4) code yet.
+app.use('/api/analytics', require('./routes/analytics.routes.js'));
+// --- End of Added Code ---
+
 // Use CommonJS 'module.exports'
 module.exports = app;

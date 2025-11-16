@@ -1,9 +1,11 @@
+// --- English Comments Only ---
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import LoadingSpinner from '../components/LoadingSpinner';
+// --- FIX: Use relative path for Vite setup ---
+import LoadingSpinner from '../components/LoadingSpinner.jsx';
 
-// FIXED: 'process.env' ko 'import.meta.env' kiya
-const API_URL = import.meta.env.VITE_APP_API_URL || 'http://localhost:8000/api';
+// --- FIX: Use hardcoded URL to avoid import.meta warnings ---
+const API_URL = 'http://localhost:8000/api';
 
 function WorkspaceView({ token, onLogout }) {
   const [documents, setDocuments] = useState([]);
@@ -21,10 +23,8 @@ function WorkspaceView({ token, onLogout }) {
     const fetchDocuments = async () => {
       setIsLoading(true);
       try {
-        // FIXED: API Route ko humare banaye hue route se match kiya
         const res = await fetch(`${API_URL}/documents/ws/${workspaceId}`, {
           headers: {
-            // FIXED: 'x-auth-token' ko 'Authorization' kiya
             'Authorization': `Bearer ${token}`
           },
         });
@@ -45,11 +45,10 @@ function WorkspaceView({ token, onLogout }) {
     e.preventDefault();
     if (newDocTitle.trim() === '') return;
     try {
-      const res = await fetch(`${API_URL}/documents`, { // Yeh route (POST /api/documents) humne banaya tha, yeh sahi hai
+      const res = await fetch(`${API_URL}/documents`, { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // FIXED: 'x-auth-token' ko 'Authorization' kiya
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ title: newDocTitle, workspace: workspaceId }),
@@ -70,10 +69,10 @@ function WorkspaceView({ token, onLogout }) {
     }
   };
 
-  // ----- YAHAN SE POORA UI ADD KIYA GAYA HAI -----
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-8">
-      <header className="flex justify-between items-center mb-12">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-12 gap-4">
+        {/* Left Side: Back button and Title */}
         <div>
           <button
             onClick={() => navigate('/')} // Navigate to Dashboard
@@ -83,12 +82,28 @@ function WorkspaceView({ token, onLogout }) {
           </button>
           <h1 className="text-4xl font-bold text-white truncate">{workspaceName}</h1>
         </div>
-        <button
-          onClick={onLogout}
-          className="flex items-center gap-3 bg-white/10 backdrop-blur-md text-white px-6 py-3 rounded-2xl font-semibold border border-white/20 hover:bg-white/20 transition-all"
-        >
-          Logout
-        </button>
+        
+        {/* Right Side: Action Buttons */}
+        <div className="flex items-center gap-3">
+          {/* --- 1. ADDED: Analytics Button --- */}
+          <button
+            onClick={() => navigate(`/workspace/${workspaceId}/analytics`)}
+            className="group flex items-center gap-2 bg-purple-600 text-white px-4 py-3 rounded-2xl font-semibold border border-purple-500 hover:bg-purple-500 transition-all"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2z" />
+            </svg>
+            View Analytics
+          </button>
+          {/* --- End of Added Code --- */}
+
+          <button
+            onClick={onLogout}
+            className="flex items-center gap-3 bg-white/10 backdrop-blur-md text-white px-6 py-3 rounded-2xl font-semibold border border-white/20 hover:bg-white/20 transition-all"
+          >
+            Logout
+          </button>
+        </div>
       </header>
 
       {/* Create Document Form */}
