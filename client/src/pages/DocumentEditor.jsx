@@ -8,7 +8,8 @@ import * as Y from 'yjs';
 import { SocketIOProvider } from 'y-socket.io';
 
 // Use hardcoded URL to avoid import.meta warnings
-const API_URL = 'http://localhost:8000/api';
+const BASE_URL = import.meta.env.VITE_APP_API_URL; // http://localhost:8000
+const API_URL = `${BASE_URL}/api`;
 
 function DocumentEditor({ token, onLogout }) {
   const [document, setDocument] = useState(null);
@@ -38,7 +39,7 @@ function DocumentEditor({ token, onLogout }) {
     // This part is fine, it connects to your server
     const doc = new Y.Doc();
     const socketProvider = new SocketIOProvider(
-      'http://localhost:8000', // Your server URL
+      BASE_URL, // Your server URL
       documentId, // The documentId acts as the room name
       doc,
       { autoConnect: true }

@@ -30,7 +30,8 @@ const Toolbar = ({ editor, token }) => {
     formData.append('image', file); 
 
     // Hardcoded URL (as per our setup)
-    const API_URL = 'http://localhost:8000/api'; 
+    const BASE_URL = import.meta.env.VITE_APP_API_URL; // http://localhost:8000
+const API_URL = `${BASE_URL}/api`;
 
     const tempUrl = URL.createObjectURL(file);
     editor.chain().focus().setImage({ src: tempUrl }).run();

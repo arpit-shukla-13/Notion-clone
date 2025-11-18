@@ -17,7 +17,7 @@ import AnalyticsView from '/src/pages/AnalyticsView.jsx';
 import { SocketContext } from '/src/context/SocketContext.jsx';
 
 // Socket.IO Server URL (Port 8000, not 1234)
-const SOCKET_URL = 'http://localhost:8000';
+const SOCKET_URL = import.meta.env.VITE_APP_API_URL;
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token'));

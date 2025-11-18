@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 
-const API_URL = import.meta.env.VITE_APP_API_URL || 'http://localhost:8000/api';
+const BASE_URL = import.meta.env.VITE_APP_API_URL; // http://localhost:8000
+const API_URL = `${BASE_URL}/api`;
 
 function Register({ setToken }) {
  

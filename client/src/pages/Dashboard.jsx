@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '/src/components/LoadingSpinner';
 
-const API_URL = import.meta.env.VITE_APP_API_URL || 'http://localhost:8000/api';
+const BASE_URL = import.meta.env.VITE_APP_API_URL; // http://localhost:8000
+const API_URL = `${BASE_URL}/api`;
 
 function Dashboard({ token, onLogout }) {
   const [workspaces, setWorkspaces] = useState([]);

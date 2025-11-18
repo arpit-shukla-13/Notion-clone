@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 
-// FIXED: 'process.env' ko 'import.meta.env' kiya
-const API_URL = import.meta.env.VITE_APP_API_URL || 'http://localhost:8000/api';
+
+const BASE_URL = import.meta.env.VITE_APP_API_URL; // http://localhost:8000
+const API_URL = `${BASE_URL}/api`;
 
 function Login({ setToken }) {
   const [email, setEmail] = useState('');

@@ -5,7 +5,8 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import LoadingSpinner from '../components/LoadingSpinner.jsx';
 
 // --- FIX: Use hardcoded URL to avoid import.meta warnings ---
-const API_URL = 'http://localhost:8000/api';
+const BASE_URL = import.meta.env.VITE_APP_API_URL; // http://localhost:8000
+const API_URL = `${BASE_URL}/api`;
 
 function WorkspaceView({ token, onLogout }) {
   const [documents, setDocuments] = useState([]);

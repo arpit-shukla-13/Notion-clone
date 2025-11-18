@@ -6,7 +6,8 @@ import LoadingSpinner from '/src/components/LoadingSpinner.jsx';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 // Use hardcoded URL to avoid import.meta warnings
-const API_URL = 'http://localhost:8000/api';
+const BASE_URL = import.meta.env.VITE_APP_API_URL; // http://localhost:8000
+const API_URL = `${BASE_URL}/api`;
 
 // Helper function to get auth headers
 const getAuthHeaders = (token, navigate) => {
