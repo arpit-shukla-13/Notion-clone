@@ -8,16 +8,27 @@
     <meta name="description" content="Modern Collaborative Document Editor" />
     <title>Motion - Collaborative Editor</title>
     
-    <!-- Preload Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    <script>
+      tailwind.config = {
+        darkMode: 'class', // Dark mode enable karne ke liye
+        theme: {
+          extend: {
+            colors: {
+              // Agar koi specific custom color miss ho raha ho, toh yahan define kar sakte ho
+              // Example: 'brand-dark': '#0f0f0f',
+            }
+          }
+        }
+      }
+    </script>
     
   </head>
-  <body class="dark:bg-gray-900">
+  <body class="dark:bg-gray-900 dark:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
