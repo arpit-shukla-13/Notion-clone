@@ -51,6 +51,7 @@
 .card-hover {
   animation: slideUp 0.6s ease-out forwards;
   opacity: 0;
+  color:#fff;
 }
 
 /* Shimmer Effect */
