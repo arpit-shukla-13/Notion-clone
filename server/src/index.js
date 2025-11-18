@@ -12,7 +12,7 @@ const httpServer = http.createServer(app);
 // 2. Create Socket.IO server
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:5173', // Your client URL
+    origin: ['http://localhost:5173', 'https://notion-clone-motion.netlify.app/'],
     methods: ['GET', 'POST'],
   },
 });
