@@ -1,7 +1,7 @@
-// --- English Comments Only ---
+// src/controllers/document.controller.js
 const Document = require('../models/Document');
 const Workspace = require('../models/Workspace');
-const Activity = require('../models/Activity'); // <-- 1. IMPORT THE NEW ACTIVITY MODEL
+const Activity = require('../models/Activity'); 
 
 // @desc    Create a new document in a workspace
 // @route   POST /api/documents
@@ -12,7 +12,7 @@ exports.createDocument = async (req, res) => {
   const userId = req.user._id;
 
   try {
-    // Check if user is part of the workspace
+    // --- 1. Check permission (User workspace ka member hai ya nahi) ---
     const workspace = await Workspace.findOne({ 
       _id: wsId, 
       'members.user': userId 
@@ -22,6 +22,20 @@ exports.createDocument = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized for this workspace' });
     }
 
+    // --- 2. NEW CODE: Duplicate Name Check (Yahan add kiya hai) ---
+    // Hum check karenge ki kya is workspace mein same title wala document pehle se hai?
+    if (title) { // Sirf tab check karein agar title provided hai
+        const existingDoc = await Document.findOne({
+            workspace: wsId,
+            title: title
+        });
+
+        if (existingDoc) {
+            return res.status(400).json({ message: 'A document with this name already exists.' });
+        }
+    }
+    // --- End of New Code ---
+
     const document = await Document.create({
       title: title || 'Untitled',
       workspace: wsId,
@@ -29,14 +43,13 @@ exports.createDocument = async (req, res) => {
       createdBy: userId,
     });
 
-    // --- 2. ADDED: Log this action to the Activity feed ---
+    // --- 3. Log this action to the Activity feed ---
     await Activity.create({
       action: 'CREATED_DOCUMENT',
       user: userId,
       workspace: wsId,
       document: document._id
     });
-    // --- End of Added Code ---
 
     res.status(201).json(document);
   } catch (error) {
@@ -48,7 +61,6 @@ exports.createDocument = async (req, res) => {
 // @route   GET /api/documents/ws/:workspaceId
 // @access  Private
 exports.getDocumentsByWorkspace = async (req, res) => {
-  // ... (This function remains unchanged) ...
   const { workspaceId } = req.params;
   const userId = req.user._id;
 
@@ -73,12 +85,10 @@ exports.getDocumentsByWorkspace = async (req, res) => {
   }
 };
 
-
 // @desc    Get a single document by its ID
 // @route   GET /api/documents/:id
 // @access  Private
 exports.getDocumentById = async (req, res) => {
-  // ... (This function remains unchanged) ...
   try {
     const document = await Document.findById(req.params.id);
 
@@ -135,7 +145,7 @@ exports.updateDocument = async (req, res) => {
 
     const updatedDocument = await document.save();
 
-    // --- 3. ADDED: Log this action ONLY if content changed ---
+    // --- Log this action ONLY if content changed ---
     if (contentChanged) {
       await Activity.create({
         action: 'EDITED_DOCUMENT',
@@ -144,7 +154,6 @@ exports.updateDocument = async (req, res) => {
         document: document._id
       });
     }
-    // --- End of Added Code ---
 
     res.json(updatedDocument);
   } catch (error) {

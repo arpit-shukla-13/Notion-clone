@@ -189,22 +189,22 @@ function Dashboard({ token, onLogout }) {
               Create New Workspace
             </h2>
             
-            <form onSubmit={handleCreateWorkspace} className="flex flex-col sm:flex-row gap-4 items-end">
-              <div className="flex-1">
-                <label className="text-gray-300 text-sm mb-2 block font-medium">Workspace Name</label>
+            <form onSubmit={handleCreateWorkspace} className="flex flex-col sm:flex-row gap-4 items-start">
+              <div className="flex-1 w-full">
+                <label className="text-gray-300 text-sm mb-2 block font-medium text-left">Workspace Name</label>
                 <input
                   type="text"
                   value={newWorkspaceName}
                   onChange={(e) => setNewWorkspaceName(e.target.value)}
                   placeholder="Enter a name for your new workspace..."
-                  className="w-full p-4 bg-black/30 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 backdrop-blur-md"
+                  className="w-full p-4 bg-black/30 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 backdrop-blur-md text-left"
                   disabled={isCreating}
                 />
               </div>
               <button
   type="submit"
   disabled={isCreating || !newWorkspaceName.trim()}
-  className="group relative bg-gradient-to-r from-cyan-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 overflow-hidden shadow-lg min-h-[60px] flex items-center justify-center"
+  className="group relative bg-gradient-to-r from-cyan-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 overflow-hidden shadow-lg min-h-[60px] flex items-center justify-center sm:self-end"
 >
   <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
   <span className="relative flex items-center justify-center gap-2 w-full">

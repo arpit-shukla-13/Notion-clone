@@ -15,6 +15,7 @@ function WorkspaceView({ token, onLogout }) {
   const [inviteMessage, setInviteMessage] = useState('');
   const [isInviting, setIsInviting] = useState(false);
   const [activeHover, setActiveHover] = useState(null);
+  const [isCreating, setIsCreating] = useState(false);
 
   const { workspaceId } = useParams();
   const location = useLocation();
@@ -47,6 +48,10 @@ function WorkspaceView({ token, onLogout }) {
   const handleCreateDocument = async (e) => {
     e.preventDefault();
     if (newDocTitle.trim() === '') return;
+    
+    if (isCreating) return; 
+    setIsCreating(true);
+
     try {
       const res = await fetch(`${API_URL}/documents`, { 
         method: 'POST',
@@ -56,8 +61,22 @@ function WorkspaceView({ token, onLogout }) {
         },
         body: JSON.stringify({ title: newDocTitle, workspace: workspaceId }),
       });
-      if (!res.ok) throw new Error('Failed to create document');
-      const newDoc = await res.json();
+      
+      // Step 1: Response ko ek hi baar padhein
+      const data = await res.json(); 
+
+      // Step 2: Error check karein
+      if (!res.ok) {
+        // Agar Status 400 hai (Duplicate Name), toh Alert dikhao
+        if (res.status === 400) {
+            alert("You cannot create a document with the same name!");
+        }
+        // Error throw karo taaki catch block mein jaaye
+        throw new Error(data.message || 'Failed to create document');
+      }
+      
+      // Step 3: Success! 'data' hi tumhara newDoc hai
+      const newDoc = data; 
       
       navigate(`/document/${newDoc._id}`, { 
         state: { 
@@ -69,8 +88,9 @@ function WorkspaceView({ token, onLogout }) {
 
     } catch (err) {
       setError(err.message);
+      setIsCreating(false);
     }
-  };
+};
 
   // Handle the invite submission
   const handleInviteUser = async (e) => {
@@ -251,28 +271,44 @@ function WorkspaceView({ token, onLogout }) {
               Create New Document
             </h2>
             
-            <form onSubmit={handleCreateDocument} className="flex flex-col sm:flex-row gap-4 items-end">
-              <div className="flex-1">
-                <label className="text-gray-300 text-sm mb-2 block font-medium">Document Title</label>
+            <form onSubmit={handleCreateDocument} className="flex flex-col sm:flex-row gap-4 items-start">
+              <div className="flex-1 w-full">
+                <label className="text-gray-300 text-sm mb-2 block font-medium text-left">Document Title</label>
                 <input
                   type="text"
                   value={newDocTitle}
                   onChange={(e) => setNewDocTitle(e.target.value)}
                   placeholder="Enter a title for your new document..."
-                  className="w-full p-4 bg-black/30 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 backdrop-blur-md"
+                  className="w-full p-4 bg-black/30 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-300 backdrop-blur-md text-left"
                 />
               </div>
               <button
                 type="submit"
-                disabled={!newDocTitle.trim()}
-                className="group relative bg-gradient-to-r from-cyan-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 overflow-hidden shadow-lg"
+                // Change 1: Button disable hoga agar title khali hai YA phir process chal raha hai (isCreating)
+                disabled={!newDocTitle.trim() || isCreating}
+                className="group relative bg-gradient-to-r from-cyan-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 overflow-hidden shadow-lg min-h-[60px] flex items-center justify-center sm:self-end"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                
                 <span className="relative flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                  </svg>
-                  Create Document
+                  {isCreating ? (
+                    // Change 2: Agar creating chal raha hai to Spinner dikhao
+                    <>
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Creating...
+                    </>
+                  ) : (
+                    // Change 3: Normal state mein Purana Icon dikhao
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      Create Document
+                    </>
+                  )}
                 </span>
               </button>
             </form>
@@ -408,26 +444,26 @@ function WorkspaceView({ token, onLogout }) {
                     />
                   </div>
                   <button
-  type="submit"
-  disabled={isInviting}
-  className="w-full bg-gradient-to-r from-green-600 to-cyan-600 text-white px-8 py-4 rounded-2xl font-semibold disabled:opacity-50 shadow-lg flex items-center justify-center gap-2 h-14"
->
-  {isInviting ? (
-    <div className="flex items-center justify-center gap-2">
-      <div className="w-5 h-5">
-        <LoadingSpinner size="small" />
-      </div>
-      <span>Sending Invite...</span>
-    </div>
-  ) : (
-    <div className="flex items-center justify-center gap-2">
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-      </svg>
-      <span>Send Invite</span>
-    </div>
-  )}
-</button>
+                    type="submit"
+                    disabled={isInviting}
+                    className="w-full bg-gradient-to-r from-green-600 to-cyan-600 text-white px-8 py-4 rounded-2xl font-semibold disabled:opacity-50 shadow-lg flex items-center justify-center gap-2 h-14"
+                  >
+                    {isInviting ? (
+                      <div className="flex items-center justify-center gap-2">
+                        <div className="w-5 h-5">
+                          <LoadingSpinner size="small" />
+                        </div>
+                        <span>Sending Invite...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        <span>Send Invite</span>
+                      </div>
+                    )}
+                  </button>
                 </form>
                 
                 {inviteMessage && (
