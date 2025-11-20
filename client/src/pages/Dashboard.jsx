@@ -202,27 +202,29 @@ function Dashboard({ token, onLogout }) {
                 />
               </div>
               <button
-                type="submit"
-                disabled={isCreating || !newWorkspaceName.trim()}
-                className="group relative bg-gradient-to-r from-cyan-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 overflow-hidden shadow-lg"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                <span className="relative flex items-center gap-2">
-                  {isCreating ? (
-                    <>
-                      <LoadingSpinner size="small" />
-                      Creating...
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                      Create Workspace
-                    </>
-                  )}
-                </span>
-              </button>
+  type="submit"
+  disabled={isCreating || !newWorkspaceName.trim()}
+  className="group relative bg-gradient-to-r from-cyan-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 overflow-hidden shadow-lg min-h-[60px] flex items-center justify-center"
+>
+  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+  <span className="relative flex items-center justify-center gap-2 w-full">
+    {isCreating ? (
+      <div className="flex items-center justify-center gap-2">
+        <div className="w-5 h-5">
+          <LoadingSpinner size="small" />
+        </div>
+        <span>Creating...</span>
+      </div>
+    ) : (
+      <div className="flex items-center justify-center gap-2">
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+        </svg>
+        <span>Create Workspace</span>
+      </div>
+    )}
+  </span>
+</button>
             </form>
           </div>
         </div>

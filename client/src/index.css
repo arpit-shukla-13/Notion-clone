@@ -163,9 +163,9 @@
 }
 
 /* Smooth Transitions */
-* {
+/* * {
   transition: all 0.2s ease-in-out;
-}
+} */
 
 /* Enhanced Button Styles */
 .btn-primary {

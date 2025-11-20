@@ -184,7 +184,7 @@ function WorkspaceView({ token, onLogout }) {
                 setError(null);
                 setInviteMessage('');
               }}
-              className="group flex items-center gap-3 bg-gradient-to-r from-green-600 to-cyan-600 text-white px-6 py-3 rounded-2xl font-semibold border border-green-400/50 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-green-500/20"
+              className="group flex items-center gap-3 bg-gradient-to-r from-green-600 to-cyan-600 text-white px-6 py-3 rounded-2xl font-semibold border border-green-400/50  transition-all duration-300 shadow-lg hover:shadow-green-500/20"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
@@ -408,27 +408,26 @@ function WorkspaceView({ token, onLogout }) {
                     />
                   </div>
                   <button
-                    type="submit"
-                    disabled={isInviting}
-                    className="w-full group relative bg-gradient-to-r from-green-600 to-cyan-600 text-white px-8 py-4 rounded-2xl font-semibold hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100 overflow-hidden shadow-lg"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <span className="relative flex items-center justify-center gap-2">
-                      {isInviting ? (
-                        <>
-                          <LoadingSpinner size="small" />
-                          Sending Invite...
-                        </>
-                      ) : (
-                        <>
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                          </svg>
-                          Send Invite
-                        </>
-                      )}
-                    </span>
-                  </button>
+  type="submit"
+  disabled={isInviting}
+  className="w-full bg-gradient-to-r from-green-600 to-cyan-600 text-white px-8 py-4 rounded-2xl font-semibold disabled:opacity-50 shadow-lg flex items-center justify-center gap-2 h-14"
+>
+  {isInviting ? (
+    <div className="flex items-center justify-center gap-2">
+      <div className="w-5 h-5">
+        <LoadingSpinner size="small" />
+      </div>
+      <span>Sending Invite...</span>
+    </div>
+  ) : (
+    <div className="flex items-center justify-center gap-2">
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+      </svg>
+      <span>Send Invite</span>
+    </div>
+  )}
+</button>
                 </form>
                 
                 {inviteMessage && (
